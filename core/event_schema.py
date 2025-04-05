@@ -4,8 +4,9 @@ from datetime import datetime
 class EventBase(BaseModel):
     title: str
     description: str
-    start_time: datetime
-    end_time: datetime
+    date: datetime.date
+    start_time: datetime.time
+    end_time: datetime.time
 
 class Event(EventBase):
     id: int
