@@ -1,0 +1,8 @@
+/venv
+_tech_stack.md
+**/__pycache__/
+*.sqlite3
+*.pyc
+.env
+.DS_Store
+staticfiles/
