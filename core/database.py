@@ -25,8 +25,6 @@ class Event(EventBase, table=True):
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
-
-postgres_url = "postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 engine = create_engine(DATABASE_URL, echo=True)
 
 
