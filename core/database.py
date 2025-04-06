@@ -11,13 +11,13 @@ class EventBase(SQLModel):
     date: date
     start_time: time
     end_time: time
-    
+
 
 class Event(EventBase, table=True):
 
     __tablename__ = "events"
     model_config = {"arbitrary_types_allowed": True}
-    
+
     id: int = Field(primary_key=True)
 
 
