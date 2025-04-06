@@ -2,6 +2,8 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Field, Session, SQLModel, create_engine
 from datetime import date, time
+from dotenv import load_dotenv
+import os
 
 
 class EventBase(SQLModel):
@@ -21,11 +23,11 @@ class Event(EventBase, table=True):
     id: int = Field(primary_key=True)
 
 
-sql_file_name = "database.db"
-sqlite_url = f"sqlite:///{sql_file_name}"
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+postgres_url = "postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+engine = create_engine(DATABASE_URL, echo=True)
 
 
 def create_db_and_tables():
