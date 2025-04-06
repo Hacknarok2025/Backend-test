@@ -38,7 +38,7 @@ Start the server with:
 Or run it directly with:
 
 ```bash
-uvicorn core.main:app --host 0.0.0.0 --port 8000
+uvicorn core.main:app --host 127.0.0.1 --port 8000
 ```
 
 ## API Endpoints
