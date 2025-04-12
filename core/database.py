@@ -20,7 +20,7 @@ class User(UserBase, table=True):
 
     id: int = Field(primary_key=True, default=None)
     hashed_password: str = Field(default=None)
-    score: int = Field(default=0, ge=0, le=100)
+    score: int = Field(default=0, ge=0, le=1000)
     current_level: int = Field(default=1, ge=1, le=9)
 
 

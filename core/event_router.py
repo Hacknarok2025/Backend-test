@@ -98,8 +98,8 @@ def complete_level(
         user.current_level += 1
     
     user.score += completion.score
-    if user.score > 100:
-        user.score = 100  # Limit 100 punktów
+    if user.score > 1000:
+        user.score = 1000  # Limit 1000 punktów
     
     session.add(user)
     session.commit()
