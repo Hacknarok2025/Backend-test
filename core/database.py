@@ -1,8 +1,12 @@
-from typing import Annotated, Optional
+from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Field, Session, SQLModel, create_engine
 from dotenv import load_dotenv
 import os
+from passlib.context import CryptContext
+
+# password hashing context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class UserBase(SQLModel):
@@ -15,12 +19,13 @@ class User(UserBase, table=True):
     model_config = {"arbitrary_types_allowed": True}
 
     id: int = Field(primary_key=True, default=None)
-    score: int = Field(default=0, ge=0, le=100) # zakres 0-100
-    current_level: int = Field(default=1, ge=1, le=9) # minimum level 1, maks level 9
+    hashed_password: str = Field(default=None)
+    score: int = Field(default=0, ge=0, le=100)
+    current_level: int = Field(default=1, ge=1, le=9)
 
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 
 class UserResponse(UserBase):
@@ -45,6 +50,12 @@ def create_db_and_tables():
 def get_session():
     with Session(engine) as session:
         yield session
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 SessionDep = Annotated[Session, Depends(get_session)]

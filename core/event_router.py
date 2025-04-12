@@ -1,6 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from .database import UserBase, User, UserResponse, UserCreate, LevelCompletion, SessionDep
+from .database import (User, 
+                       UserResponse, 
+                       UserCreate, 
+                       LevelCompletion, 
+                       get_password_hash,
+                       verify_password,
+                       SessionDep
+                       )
 from sqlmodel import select
 
 
@@ -11,14 +18,24 @@ router = APIRouter()
 def login_user(user: UserCreate, session: SessionDep):
     db_user = session.exec(select(User).where(User.name == user.name)).first()
     
+    
     if not db_user:
-        new_user = User(name=user.name, email=user.email, score=0, current_level=1)
+        hashed_password = get_password_hash(user.password)
+        new_user = User(
+            name=user.name,
+            email=user.email,
+            hashed_password=hashed_password,
+            score=0, 
+            current_level=1
+        )
         session.add(new_user)
         session.commit()
         session.refresh(new_user)
         return new_user
-    
-    return db_user
+    else:
+        if not verify_password(user.password, db_user.hashed_password):
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        return db_user
 
 @router.get("/users/{user_id}")
 def get_available_users(user_id: int, session:SessionDep):
