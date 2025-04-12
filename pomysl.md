@@ -6,7 +6,6 @@ Temat hackathonu "Hacknarok":
 - Logo z funkcją przejścia do HOME
 - Opis
 - Przycisk "Start"
-- 
 
 ### Pytania kontrolne
 

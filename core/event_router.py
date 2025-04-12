@@ -1,43 +1,102 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from .database import EventBase, Event, SessionDep
+from .database import UserBase, User, UserResponse, UserCreate, LevelCompletion, SessionDep
 from sqlmodel import select
 
 
 router = APIRouter()
 
 
-@router.get("/events/", response_model=List[Event])
-def read_events(session: SessionDep):
-    events = session.exec(select(Event)).all()
-    return events
+@router.post("/users/login", response_model=UserResponse)
+def login_user(user: UserCreate, session: SessionDep):
+    db_user = session.exec(select(User).where(User.name == user.name)).first()
+    
+    if not db_user:
+        new_user = User(name=user.name, email=user.email, score=0, current_level=1)
+        session.add(new_user)
+        session.commit()
+        session.refresh(new_user)
+        return new_user
+    
+    return db_user
+
+@router.get("/users/{user_id}")
+def get_available_users(user_id: int, session:SessionDep):
+     user = session.get(User, user_id)
+     if not user:
+        raise HTTPException(status_code=404, detail="Użytkownik nie istnieje")
+     
+     return user
 
 
-@router.post("/events/", response_model=Event)
-def create_event(event: EventBase, session: SessionDep):
-    new_event = Event(**event.dict())
+@router.get("/users/{user_id}/levels")
+def get_available_levels(user_id: int, session: SessionDep):
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Użytkownik nie istnieje")
+    
+    levels = []
+    for i in range(1, 10): 
+        levels.append({
+            "level_id": i,
+            "name": f"Poziom {i}",
+            "unlocked": i <= user.current_level,
+            "completed": i < user.current_level
+        })
+    
+    return levels
 
-    # database
-    session.add(new_event)
+
+@router.get("/levels/{level_id}/start")
+def start_level(level_id: int, user_id: int, session: SessionDep):
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Użytkownik nie istnieje")
+    
+    if level_id > user.current_level:
+        raise HTTPException(status_code=403, detail="Ten poziom jest jeszcze zablokowany")
+    
+    return {
+        "level_id": level_id,
+        "name": f"Poziom {level_id}",
+        "description": f"Witaj w świecie nordyckim {level_id}"
+    }
+
+
+@router.post("/levels/{level_id}/complete")
+def complete_level(
+    level_id: int, 
+    completion: LevelCompletion, 
+    user_id: int, 
+    session: SessionDep
+):
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Użytkownik nie istnieje")
+    
+    if level_id > user.current_level:
+        raise HTTPException(status_code=403, detail="Ten poziom jest jeszcze zablokowany")
+    
+    if level_id == user.current_level and user.current_level < 9:
+        user.current_level += 1
+    
+    user.score += completion.score
+    if user.score > 100:
+        user.score = 100  # Limit 100 punktów
+    
+    session.add(user)
     session.commit()
-    session.refresh(new_event)
-
-    return new_event
-
-
-@router.get("/events/{event_id}", response_model=Event)
-def read_event_by_id(event_id: int, session: SessionDep):
-    event = session.get(Event, event_id)
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
-    return event
+    session.refresh(user)
+    
+    return {
+        "success": True,
+        "next_level": user.current_level,
+        "total_score": user.score,
+        "message": "Poziom ukończony!"
+    }
 
 
-@router.delete("/events/{event_id}", response_model=Event)
-def delete_event(event_id: int, session: SessionDep):
-    event = session.get(Event, event_id)
-    if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
-    session.delete(event)
-    session.commit()
-    return {"ok": True}
+@router.get("/leaderboard", response_model=List[UserResponse])
+def get_leaderboard(session: SessionDep):
+    users = session.exec(select(User).order_by(User.score.desc()).limit(10)).all()
+    return users

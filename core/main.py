@@ -16,4 +16,4 @@ def on_startup():
 
 @app.get("/")
 async def root():
-    return "Welcome to the Calendar API"
+    return "Welcome to the Hacknarok 2025 game"
