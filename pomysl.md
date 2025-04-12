@@ -1,4 +1,5 @@
-Temat hackathonu "Hacknarok":
+# Temat hackathonu "Hacknarok":
+
 # "Połącz 9 światów jednym kodem"
 
 
@@ -14,7 +15,6 @@ Temat hackathonu "Hacknarok":
 - Przycisk "Start"
 
 
-
 ## Pytania kontrolne
 
 1. Czy ten pomysł wpasowuje się świat wikingów?
@@ -24,27 +24,32 @@ Temat hackathonu "Hacknarok":
 
 ## Światy w mitologii nordyckiej i gry
 ### 1. Nilfheim - kraina `Mgły i Lodu`
-    Gra: Odgadnij hasło z run
+    Gra: `Odgadnij hasło z run`
 
 ### 2. Helheim - kraina `Zmarłych`
-    Gra: Labirynt 2D z ograniczonym widokiem
+    Gra: `Labirynt 2D z ograniczonym widokiem`
 
 ### 3. Jotunheim - kraina `Lodowych Olbrzymów`
+    Gra: 
 
-### 4. Nidavellir - kraina `Krasnoludów`
+### 4. Nidavellir - kraina `Krasnoludów` (TODO)
+    Gra: `Złap młot` 
 
 ### 5. Vanaheim - kraina `Wanów` (bogowie starsi od bogów Asgardu)
+    Gra: "Runy Przyszłości" - gra typu match-3 z runami, reprezentująca wiedzę i przewidywanie przyszłości przez Wanów
 
 ### 6. Midgard - kraina `Ludzi`
+    Gra: `Memory tabs`
 
 ### 7. Muspelheim - kraina `Ognistych Olbrzymów` 
+    Gra: `Zręcznościowa, unikanie kul ognia`
 
 ### 8. Alfheim - kraina `Jasnych Elfów`
-    Gra: Quiz z wiedzy o mitologii nordyckiej
+    Gra: `Quiz z wiedzy o mitologii nordyckiej`
 
 ### 9. Asgard - Kraina `Asów` (obecnych bogów)
-    Gra: Obrona wieży
+    Gra: `Obrona wieży`
 
 
 ## Prompty
-czy masz pomysł na mini gierkę w javascript? jaki framework? ma pasować do projektu z pomysl.md.ma być w 
+czy masz pomysł na mini gierkę w javascript? jaki framework? ma pasować do projektu z pomysl.md
